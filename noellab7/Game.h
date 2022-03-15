@@ -32,7 +32,7 @@ private:
 	sf::Texture wintex;
 	sf::Sprite win;
 
-	sf::View view[4];
+	sf::View view[5];
 
 	sf::RectangleShape divider = sf::RectangleShape(sf::Vector2f(10.f,600.f));
 

@@ -14,9 +14,11 @@ Game::Game() :
 	view[1].setViewport(sf::FloatRect(0.5f, 0.f, 0.5f, 1.f));
 	view[2].setSize(sf::Vector2f(800.f, 600.f));
 	view[3].setSize(sf::Vector2f(800.f, 600.f));
+	view[4].setSize(sf::Vector2f(800.f, 600.f));
 	bg.setOrigin(400.f,300.f);
 	bg2.setOrigin(400.f, 300.f);
 	editorOffset = sf::Vector2f(360, 540);
+	player[0].changeColour();
 }
 
 void Game::run()
@@ -84,11 +86,11 @@ void Game::processEvents()
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 			{
-				editorOffset2.x += 50.f;
+				editorOffset.x += 50.f;
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 			{
-				editorOffset2.x -= 50.f;
+				editorOffset.x -= 50.f;
 			}
 			if (sf::Event::KeyReleased == newEvent.type)
 			{
@@ -169,8 +171,7 @@ void Game::update(sf::Time t_deltaTime)
 		break;
 
 	case gameState::LevelEditor:
-		view[0].setCenter(editorOffset.x, 300);
-		view[1].setCenter(editorOffset2.x, 300);
+		view[4].setCenter(editorOffset.x, 300);
 		level.LevelEditor();
 		break;
 	}
@@ -195,6 +196,11 @@ void Game::update(sf::Time t_deltaTime)
 	{
 		bg.setPosition(view[2].getCenter());
 	}
+
+	if (state == gameState::LevelEditor)
+	{
+		bg.setPosition(sf::Vector2f(-1000, -1000));
+	}
 }
 
 // draw the frame and then switch buffers
@@ -211,33 +217,30 @@ void Game::render()
 		{
 		case gameState::Game:
 			level.draw();
-			player[0].Draw(m_window);
 			player[1].Draw(m_window);
+			player[0].Draw(m_window);
 			break;
 
 		case gameState::LevelEditor:
+			m_window.setView(view[4]);
 			level.draw();
 			break;
 		}
 
-		m_window.setView(view[1]);
+		if (state != gameState::LevelEditor) m_window.setView(view[1]);
 
-		m_window.draw(bg2);
+		if (state != gameState::LevelEditor) m_window.draw(bg2);
 
 		switch (state)
 		{
 		case gameState::Game:
 			level.draw();
-			player[1].Draw(m_window);
 			player[0].Draw(m_window);
-			break;
-
-		case gameState::LevelEditor:
-			level.draw();
+			player[1].Draw(m_window);
 			break;
 		}
-		m_window.setView(view[3]);
-		m_window.draw(divider);
+		if (state != gameState::LevelEditor) m_window.setView(view[3]);
+		if (state != gameState::LevelEditor) m_window.draw(divider);
 	}
 	else
 	{
@@ -259,6 +262,7 @@ void Game::setup()
 	level.setup();
 	player[0].Setup();
 	player[1].Setup();
+	player[0].changeColour();
 	divider.setFillColor(sf::Color::White);
 	divider.setOrigin(sf::Vector2f(5.f,300.f));
 	divider.setPosition(view[3].getCenter() - sf::Vector2f(5.f, 0.f));

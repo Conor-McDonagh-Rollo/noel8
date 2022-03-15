@@ -26,6 +26,7 @@ public:
 	void ProcessKeys2();
 	sf::FloatRect GetBounds() { return body.getGlobalBounds(); }
 	sf::Vector2f GetPosition() { return body.getPosition(); }
+	void changeColour() { tex.loadFromFile("ASSETS/IMAGES/player2.png"); }
 
 	bool dead = false;
 	bool win = false;
